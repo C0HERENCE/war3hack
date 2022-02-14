@@ -3,15 +3,15 @@
 #include <TlHelp32.h>
 #include "jass/jass_vm.h"
 #include "jass/global_variable.h"
+#include "inject/hook.h"
+#include "japi.h"
 
 DWORD GetW3TlsForIndex(DWORD index);
 
 void main()
 {
-	printf("start\n");
 	// get game.dll base address
 	uint32_t hGameDll = (uint32_t)GetModuleHandleA("Game.dll");
-	printf("%p\n", hGameDll);
 
 	// get&set Tls
 	auto tlsIndex = *(DWORD *)(0xBB8628 + hGameDll);
@@ -19,18 +19,35 @@ void main()
 
 	// set GetInstance address in jass_vm.h
 	GetInstance = (_GetInstance)(hGameDll + 0x4efb0);
-	printf("%p\n", GetInstance);
 
-	// get global table
+	// get global table, function table
 	auto global_table = get_jass_vm()->global_table;
-	printf("%p\n", global_table);
+	auto function_table = get_native_function_hashtable();
 
-	int xb=0;
-	for (auto it = global_table->begin();it != global_table->end(); ++it)
-	{
-		global_variable gv((variable_node*)(&(*it)));
-		printf("%d: %s\n", xb++, gv.name());
-	}
+	auto node = function_table->find("RequestExtraIntegerData");
+	RequestExtraIntegerData_o = (RequestExtraIntegerData)node->func_address_;
+	node->func_address_ = (uint32_t)RequestExtraIntegerData_h;
+
+	node = function_table->find("RequestExtraBooleanData");
+	RequestExtraBooleanData_o = (RequestExtraBooleanData)node->func_address_;
+	node->func_address_ = (uint32_t)RequestExtraBooleanData_h;
+
+	node = function_table->find("DzAPI_Map_GetMapLevel");
+	DzAPI_Map_GetMapLevel_o = (DzAPI_Map_GetMapLevel)node->func_address_;
+	node->func_address_ = (uint32_t)DzAPI_Map_GetMapLevel_h;
+
+	node = function_table->find("DzAPI_Map_HasMallItem");
+	DzAPI_Map_HasMallItem_o = (DzAPI_Map_HasMallItem)node->func_address_;
+	node->func_address_ = (uint32_t)DzAPI_Map_HasMallItem_h;
+
+	node = function_table->find("DzAPI_Map_IsRedVIP");
+	DzAPI_Map_IsRedVIP_o = (DzAPI_Map_IsRedVIP)node->func_address_;
+	node->func_address_ = (uint32_t)DzAPI_Map_IsRedVIP_h;
+
+	node = function_table->find("DzAPI_Map_IsBlueVIP");
+	DzAPI_Map_IsBlueVIP_o = (DzAPI_Map_IsBlueVIP)node->func_address_;
+	node->func_address_ = (uint32_t)DzAPI_Map_IsBlueVIP_h;
+
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)

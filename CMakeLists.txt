@@ -9,13 +9,18 @@ file(GLOB war3hack_SRC
      "*.cpp"
      "jass/*.h"
      "jass/*.cpp"
-     "jass/string/*.h"
-     "jass/string/*.cpp"
-     "jass/table/*.h"
-     "jass/table/*.cpp"
+     "jass/*/*.h"
+     "jass/*/*.cpp"
+     "inject/*.h"
+     "inject/*.cpp"
+
+     "minhook/src/*"
+     "minhook/src/hde/*"
 )
 
 add_library(war3hack SHARED ${war3hack_SRC})
+target_include_directories(war3hack PRIVATE "minhook/include")
+
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
