@@ -24,30 +24,6 @@ void main()
 	auto global_table = get_jass_vm()->global_table;
 	auto function_table = get_native_function_hashtable();
 
-	auto node = function_table->find("RequestExtraIntegerData");
-	RequestExtraIntegerData_o = (RequestExtraIntegerData)node->func_address_;
-	node->func_address_ = (uint32_t)RequestExtraIntegerData_h;
-
-	node = function_table->find("RequestExtraBooleanData");
-	RequestExtraBooleanData_o = (RequestExtraBooleanData)node->func_address_;
-	node->func_address_ = (uint32_t)RequestExtraBooleanData_h;
-
-	node = function_table->find("DzAPI_Map_GetMapLevel");
-	DzAPI_Map_GetMapLevel_o = (DzAPI_Map_GetMapLevel)node->func_address_;
-	node->func_address_ = (uint32_t)DzAPI_Map_GetMapLevel_h;
-
-	node = function_table->find("DzAPI_Map_HasMallItem");
-	DzAPI_Map_HasMallItem_o = (DzAPI_Map_HasMallItem)node->func_address_;
-	node->func_address_ = (uint32_t)DzAPI_Map_HasMallItem_h;
-
-	node = function_table->find("DzAPI_Map_IsRedVIP");
-	DzAPI_Map_IsRedVIP_o = (DzAPI_Map_IsRedVIP)node->func_address_;
-	node->func_address_ = (uint32_t)DzAPI_Map_IsRedVIP_h;
-
-	node = function_table->find("DzAPI_Map_IsBlueVIP");
-	DzAPI_Map_IsBlueVIP_o = (DzAPI_Map_IsBlueVIP)node->func_address_;
-	node->func_address_ = (uint32_t)DzAPI_Map_IsBlueVIP_h;
-
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
